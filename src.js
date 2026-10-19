@@ -1,13 +1,10 @@
 class AutoDope {
-  private isEnabled: boolean = false;
-  private titleEl: HTMLElement | null;
-  private dopeBtn: HTMLElement | null;
-  private mutationObserver: MutationObserver | null = null;
-  private toggleBtn: HTMLElement | null = null;
-
   constructor() {
+    this.isEnabled = false;
     this.titleEl = document.querySelector('#trackTitle a');
     this.dopeBtn = document.querySelector("[title='Vote Up']");
+    this.mutationObserver = null;
+    this.toggleBtn = null;
 
     if (!this.titleEl || !this.dopeBtn) {
       console.error('AutoDope: Required elements not found');
@@ -18,20 +15,20 @@ class AutoDope {
     this.init();
   }
 
-  private init(): void {
+  init() {
     this.setupMutationObserver();
     this.createToggleButton();
   }
 
-  private setupMutationObserver(): void {
+  setupMutationObserver() {
     this.mutationObserver = new MutationObserver(() => this.onTrackChange());
-    this.mutationObserver.observe(this.titleEl!, {
+    this.mutationObserver.observe(this.titleEl, {
       childList: true,
-      subtree: true, // Also observe nested changes
+      subtree: true,
     });
   }
 
-  private onTrackChange(): void {
+  onTrackChange() {
     if (this.titleEl) {
       console.log('Track changed:', this.titleEl.textContent);
     }
@@ -41,7 +38,7 @@ class AutoDope {
     }
   }
 
-  private createToggleButton(): void {
+  createToggleButton() {
     this.toggleBtn = document.createElement('button');
     this.toggleBtn.textContent = 'AutoDope';
     this.toggleBtn.setAttribute('aria-label', 'Toggle AutoDope');
@@ -63,26 +60,27 @@ class AutoDope {
 
     this.toggleBtn.addEventListener('click', () => this.toggle());
     document.body.appendChild(this.toggleBtn);
+    this.updateButtonState();
   }
 
-  private loadState(): void {
+  loadState() {
     const saved = localStorage.getItem('autoDope_enabled');
     this.isEnabled = saved === 'true';
     if (this.toggleBtn) this.updateButtonState();
   }
 
-  private saveState(): void {
+  saveState() {
     localStorage.setItem('autoDope_enabled', this.isEnabled.toString());
   }
   
-  private toggle(): void {
+  toggle() {
     this.isEnabled = !this.isEnabled;
     this.saveState();
     this.updateButtonState();
     console.log(`AutoDope is now ${this.isEnabled ? 'ON' : 'OFF'}`);
   }
 
-  private updateButtonState(): void {
+  updateButtonState() {
     if (!this.toggleBtn) return;
 
     if (this.isEnabled) {
@@ -96,7 +94,7 @@ class AutoDope {
     }
   }
 
-  public destroy(): void {
+  destroy() {
     if (this.mutationObserver) {
       this.mutationObserver.disconnect();
     }
@@ -108,11 +106,11 @@ class AutoDope {
 }
 
 // Initialize
-let autoDopeInstance: AutoDope | null = null;
+let autoDopeInstance = null;
 
 if (!autoDopeInstance) {
   autoDopeInstance = new AutoDope();
 }
 
 // Optional: Add to window for console access
-(window as any).autoDope = autoDopeInstance;
+window.autoDope = autoDopeInstance;
