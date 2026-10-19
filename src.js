@@ -1,5 +1,11 @@
 class AutoDope {
   constructor() {
+    // Safeguard: Only run on app.rvrb.one
+    if (!this.isAllowedDomain()) {
+      console.error('AutoDope: This script only works on app.rvrb.one');
+      return;
+    }
+    
     this.isEnabled = false;
     this.titleEl = document.querySelector('#trackTitle a');
     this.dopeBtn = document.querySelector("[title='Vote Up']");
@@ -15,6 +21,12 @@ class AutoDope {
     this.init();
   }
 
+  isAllowedDomain() {
+    const allowedDomains = ['app.rvrb.one'];
+    const currentDomain = window.location.hostname;
+    return allowedDomains.includes(currentDomain);
+  }
+  
   init() {
     this.setupMutationObserver();
     this.createToggleButton();
