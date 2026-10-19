@@ -13,7 +13,8 @@ class AutoDope {
       console.error('AutoDope: Required elements not found');
       return;
     }
-
+    
+    this.loadState();
     this.init();
   }
 
