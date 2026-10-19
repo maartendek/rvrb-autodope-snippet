@@ -64,8 +64,19 @@ class AutoDope {
     document.body.appendChild(this.toggleBtn);
   }
 
+  private loadState(): void {
+    const saved = localStorage.getItem('autoDope_enabled');
+    this.isEnabled = saved === 'true';
+    if (this.toggleBtn) this.updateButtonState();
+  }
+
+  private saveState(): void {
+    localStorage.setItem('autoDope_enabled', this.isEnabled.toString());
+  }
+  
   private toggle(): void {
     this.isEnabled = !this.isEnabled;
+    this.saveState();
     this.updateButtonState();
     console.log(`AutoDope is now ${this.isEnabled ? 'ON' : 'OFF'}`);
   }
